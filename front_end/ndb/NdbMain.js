@@ -239,6 +239,10 @@ Ndb.NodeProcessManager = class extends Common.Object {
       async function service() {
         const service = await Ndb.backend.createService('ndd_service.js');
         await service.init(rpc.handle(this));
+
+        const network = await Ndb.backend.createService('network.js');
+        await network.init(rpc.handle(this));
+
         InspectorFrontendHost.sendMessageToBackend = this._sendMesage.bind(this);
         return service;
       }

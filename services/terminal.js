@@ -11,6 +11,7 @@ const { rpc, rpc_process } = require('carlo/rpc');
 class Terminal {
   constructor(frontend, pty, nddStore, cols, rows) {
     require('../lib/process_utility.js')('terminal', () => this.dispose());
+
     let shell = process.env.SHELL;
     if (!shell || !fs.existsSync(shell))
       shell = process.platform === 'win32' ? 'cmd.exe' : 'bash';
