@@ -27,7 +27,7 @@
           "location": "sources.sidebar-top"
       }
   ],
-  "dependencies": ["ui", "sources", "timeline", "ndb"],
+  "dependencies": ["ui", "sources", "timeline", "ndb", "network"],
   "scripts": [
       "RunConfiguration.js",
       "NodeProcesses.js",
