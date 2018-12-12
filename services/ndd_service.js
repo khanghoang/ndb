@@ -160,7 +160,6 @@ class NddService {
       env.NDD_DATA = options.data;
     }
 
-    // const preloadPath = path.resolve('./lib/preload/ndb/httpMonkeyPatching.js');
     const p = spawn(execPath, args, {
       cwd: options.cwd,
       env: { ...process.env, ...env },
