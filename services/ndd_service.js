@@ -155,16 +155,18 @@ class NddService {
       NDD_WAIT_FOR_CONNECTION: 1,
       NDB_VERSION
     };
-    if (options && options.data)
+
+    if (options && options.data) {
       env.NDD_DATA = options.data;
-      console.log('parent process id', process.getuid());
-      const preloadPath = path.resolve('./lib/preload/ndb/preload.js');
-      const p = spawn(execPath, [...args, '-r', preloadPath ], {
-        cwd: options.cwd,
-        env: { ...process.env, ...env },
-        stdio: options.ignoreOutput ? 'ignore' : ['pipe', 'pipe', 'pipe', 'ipc'],
-        windowsHide: true
-      });
+    }
+
+    // const preloadPath = path.resolve('./lib/preload/ndb/httpMonkeyPatching.js');
+    const p = spawn(execPath, args, {
+      cwd: options.cwd,
+      env: { ...process.env, ...env },
+      stdio: options.ignoreOutput ? 'ignore' : ['pipe', 'pipe', 'pipe', 'ipc'],
+      windowsHide: true
+    });
 
     if (!options.ignoreOutput) {
       const filter = [
@@ -181,8 +183,8 @@ class NddService {
       });
     }
     return new Promise((resolve, reject) => {
-      p.on('message', m => {
-        console.log('message sent to parent process: ', m);
+      p.on('message', ({ type, payload }) => {
+        this._frontend.sendNetworkData({ type, payload });
       });
       p.on('exit', code => resolve(code));
       p.on('error', error => reject(error));

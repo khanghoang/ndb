@@ -40,6 +40,7 @@
       "../node_modules/xterm/dist/xterm.js",
       "../node_modules/xterm/dist/addons/fit/fit.js",
       "Terminal.js",
+      "Network.js",
 
         "Target.js",
         "TargetManager.js",

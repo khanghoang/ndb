@@ -4,6 +4,12 @@
  * Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 
+let id = 1;
+
+const getId = () => {
+  return `${id++}`;
+};
+
 Ndb.nodeExecPath = function() {
   if (!Ndb._nodeExecPathPromise)
     Ndb._nodeExecPathPromise = Ndb.backend.which('node').then(result => result.resolvedPath);
@@ -227,6 +233,65 @@ Ndb.NodeProcessManager = class extends Common.Object {
           InspectorFrontendHostAPI.Events.DispatchMessage,
           message);
     }
+  }
+
+  sendNetworkData({ type, payload }) {
+    const req = payload;
+    console.log('payload: ', JSON.stringify(payload));
+    // {
+    //   "protocol": "http:",
+    //     "slashes": true,
+    //     "auth": null,
+    //     "host": "jsonplaceholder.typicode.com",
+    //     "port": null,
+    //     "hostname": "jsonplaceholder.typicode.com",
+    //     "hash": null,
+    //     "search": null,
+    //     "query": null,
+    //     "pathname": "/todos/1",
+    //     "path": "/todos/1",
+    //     "href": "http://jsonplaceholder.typicode.com/todos/1",
+    //     "method": "GET",
+    //     "headers": {
+    //       "Accept": [
+    //         "|)}>#*"
+    //       ],
+    //       "User-Agent": [
+    //         "node-fetch/1.0 (+https://github.com/bitinn/node-fetch)"
+    //       ],
+    //       "Accept-Encoding": [
+    //         "gzip,deflate"
+    //       ],
+    //       "Connection": [
+    //         "close"
+    //       ]
+    //     }
+    // }
+
+    const requestId = getId();
+
+    for(const name in req.headers) {
+      req.headers[name] = req.headers[name][0];
+    }
+
+    window._networkDispatcher[type](
+      requestId,
+      requestId,
+      `${req.href}`, // "http://jsonplaceholder.typicode.com/todos/1"
+      {
+        "url": `${req.href}`,
+        "method": `${req.method}`,
+        "headers": req.headers,
+        "mixedContentType": "none",
+        "initialPriority": "VeryHigh",
+        "referrerPolicy": "no-referrer-when-downgrade"
+      },
+      341143.242095,
+      1544306456.209423,
+      {},
+      "",
+      "XHR"
+    )
   }
 
   async _sendMesage(message) {

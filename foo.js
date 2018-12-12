@@ -1,8 +1,6 @@
 const fetch = require('node-fetch');
 const http = require('http');
 
-console.log('fetch: ');
-
-fetch('http://jsonplaceholder.typicode.com/todos/1')
+fetch('http://jsonplaceholder.typicode.com/todos/5')
   .then(response => response.json())
   .then(json => console.log(json))
