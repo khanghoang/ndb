@@ -157,12 +157,15 @@ class NddService {
     };
     if (options && options.data)
       env.NDD_DATA = options.data;
-    const p = spawn(execPath, args, {
-      cwd: options.cwd,
-      env: { ...process.env, ...env },
-      stdio: options.ignoreOutput ? 'ignore' : ['inherit', 'inherit', 'pipe'],
-      windowsHide: true
-    });
+      console.log('parent process id', process.getuid());
+      const preloadPath = path.resolve('./lib/preload/ndb/preload.js');
+      const p = spawn(execPath, [...args, '-r', preloadPath ], {
+        cwd: options.cwd,
+        env: { ...process.env, ...env },
+        stdio: options.ignoreOutput ? 'ignore' : ['pipe', 'pipe', 'pipe', 'ipc'],
+        windowsHide: true
+      });
+
     if (!options.ignoreOutput) {
       const filter = [
         Buffer.from('Debugger listening on', 'utf8'),
@@ -178,6 +181,9 @@ class NddService {
       });
     }
     return new Promise((resolve, reject) => {
+      p.on('message', m => {
+        console.log('message sent to parent process: ', m);
+      });
       p.on('exit', code => resolve(code));
       p.on('error', error => reject(error));
     }).then(_ => fs.unlink(path.join(this._nddStores[0], String(p.pid)), err => 0));
