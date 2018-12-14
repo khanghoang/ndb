@@ -183,7 +183,12 @@ class NddService {
     }
     return new Promise((resolve, reject) => {
       p.on('message', ({ type, payload }) => {
-        this._frontend.sendNetworkData({ type, payload });
+        console.log('Rupesh Payload', type);
+        if(type === 'loadingFinished') {
+          this._frontend.sendLoadingFinished({ type, payload });
+        } else {
+          this._frontend.sendNetworkData({ type, payload });
+        }
       });
       p.on('exit', code => resolve(code));
       p.on('error', error => reject(error));
