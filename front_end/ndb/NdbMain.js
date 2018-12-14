@@ -40,7 +40,25 @@ Ndb.NdbMain = class extends Common.Object {
     Ndb.nodeProcessManager = new Ndb.NodeProcessManager(SDK.targetManager);
     this._addDefaultFileSystem();
 
-    await new Promise(resolve => SDK.initMainConnection(resolve));
+    await new Promise(resolve => {
+      SDK.initMainConnection(() => {
+        const type = Runtime.queryParam('v8only') ? SDK.Target.Type.Node : SDK.Target.Type.Frame;
+        debugger;
+        const target = SDK.targetManager.createTarget('main', Common.UIString('Main'), type, null);
+        target.runtimeAgent().runIfWaitingForDebugger();
+        new InspectorMain.InspectedNodeRevealer();
+        new InspectorMain.SourcesPanelIndicator();
+        new InspectorMain.BackendSettingsSync();
+        new MobileThrottling.NetworkPanelIndicator();
+
+        InspectorFrontendHost.events.addEventListener(InspectorFrontendHostAPI.Events.ReloadInspectedPage, event => {
+          const hard = /** @type {boolean} */ (event.data);
+          SDK.ResourceTreeModel.reloadAllPages(hard);
+        });
+        resolve();
+      }, Components.TargetDetachedDialog.webSocketConnectionLost);
+
+    });
     // Create root Main target.
     SDK.targetManager.createTarget('<root>', ls`Root`, SDK.Target.Type.Browser, null);
 
@@ -244,6 +262,17 @@ Ndb.NodeProcessManager = class extends Common.Object {
    */
   sendLoadingFinished({ type, payload }) {
     window._networkDispatcher.loadingFinished(payload.id, "19094.223976", 100);
+  }
+
+  getResponseBody(data) {
+    // window._networkDispatcher.loadingFinished(payload.id, "19094.223976", 100);
+  }
+
+  responseToFrontEnd(id, result) {
+    InspectorFrontendHost.events.dispatchEventToListeners(
+      InspectorFrontendHostAPI.Events.DispatchMessage,
+      { id, result: { ...result } }
+    );
   }
 
   sendNetworkData({ type, payload }) {

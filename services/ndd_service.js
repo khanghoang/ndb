@@ -21,6 +21,8 @@ const fsMkdtemp = util.promisify(fs.mkdtemp);
 const fsReadFile = util.promisify(fs.readFile);
 const removeFolder = util.promisify(require('rimraf'));
 
+const catchedRequests = {};
+
 class NddService {
   constructor() {
     require('../lib/process_utility.js')('ndd_service', () => this.dispose());
@@ -186,6 +188,7 @@ class NddService {
         console.log('Rupesh Payload', type);
         if(type === 'loadingFinished') {
           this._frontend.sendLoadingFinished({ type, payload });
+          catchedRequests[payload.id] = payload;
         } else {
           this._frontend.sendNetworkData({ type, payload });
         }
@@ -205,10 +208,17 @@ class NddService {
 
   sendMessage(rawMessage) {
     const message = JSON.parse(rawMessage);
+    // const socket = this._sockets.get(message.sessionId) || this._sockets.get(Array.from(this._sockets.keys())[0]);
     const socket = this._sockets.get(message.sessionId);
     delete message.sessionId;
-    if (socket)
+    console.log('rawMessage: ', rawMessage);
+    if (socket) {
       socket.send(JSON.stringify(message));
+      return;
+    }
+    // get response body
+    // this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.requestId].data });
+    this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.params.requestId].data });
   }
 
   disconnect(sessionId) {
