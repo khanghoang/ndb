@@ -187,12 +187,9 @@ class NddService {
     return new Promise((resolve, reject) => {
       p.on('message', ({ type, payload }) => {
         if (!(type && payload)) return;
-        if (type === 'loadingFinished') {
-          this._frontend.sendLoadingFinished({ type, payload });
-          catchedRequests[payload.id] = payload;
-        } else {
-          this._frontend.sendNetworkData({ type, payload });
-        }
+
+        catchedRequests[payload.id] = payload;
+        this._frontend.sendNetworkData({ type, payload });
       });
       p.on('exit', code => resolve(code));
       p.on('error', error => reject(error));
