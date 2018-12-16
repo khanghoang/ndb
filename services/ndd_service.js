@@ -187,7 +187,6 @@ class NddService {
     return new Promise((resolve, reject) => {
       p.on('message', ({ type, payload }) => {
         if (!(type && payload)) return;
-        console.log('Rupesh Payload', type);
         if (type === 'loadingFinished') {
           this._frontend.sendLoadingFinished({ type, payload });
           catchedRequests[payload.id] = payload;
@@ -213,14 +212,14 @@ class NddService {
     // const socket = this._sockets.get(message.sessionId) || this._sockets.get(Array.from(this._sockets.keys())[0]);
     const socket = this._sockets.get(message.sessionId);
     delete message.sessionId;
-    console.log('rawMessage: ', rawMessage);
     if (socket) {
       socket.send(JSON.stringify(message));
       return;
+    } else {
+      // send message to frontend directly
+      // (eg: getResponseBody)
+      this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.params.requestId].data });
     }
-    // get response body
-    // this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.requestId].data });
-    this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.params.requestId].data });
   }
 
   disconnect(sessionId) {
