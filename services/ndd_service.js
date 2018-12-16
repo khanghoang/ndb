@@ -150,22 +150,23 @@ class NddService {
     if (nodePath)
       nodePath += process.platform === 'win32' ? ';' : ':';
     nodePath += path.join(__dirname, '..', 'lib', 'preload');
+    const pathToHttpPatch = path.resolve(__dirname, '..', './lib/preload/ndb/httpMonkeyPatching.js');
+
     const env = {
-      NODE_OPTIONS: `--require ndb/preload.js`,
+      NODE_OPTIONS: `--require ndb/preload.js --require ${pathToHttpPatch}`,
       NODE_PATH: nodePath,
       NDD_STORE: this._nddStores[0],
       NDD_WAIT_FOR_CONNECTION: 1,
       NDB_VERSION
     };
 
-    if (options && options.data) {
+    if (options && options.data)
       env.NDD_DATA = options.data;
-    }
 
     const p = spawn(execPath, args, {
       cwd: options.cwd,
       env: { ...process.env, ...env },
-      stdio: options.ignoreOutput ? 'ignore' : ['pipe', 'pipe', 'pipe', 'ipc'],
+      stdio: options.ignoreOutput ? ['ignore', 'ignore', 'ignore', 'ipc'] : ['pipe', 'pipe', 'pipe', 'ipc'],
       windowsHide: true
     });
 
@@ -185,8 +186,9 @@ class NddService {
     }
     return new Promise((resolve, reject) => {
       p.on('message', ({ type, payload }) => {
+        if (!(type && payload)) return;
         console.log('Rupesh Payload', type);
-        if(type === 'loadingFinished') {
+        if (type === 'loadingFinished') {
           this._frontend.sendLoadingFinished({ type, payload });
           catchedRequests[payload.id] = payload;
         } else {
