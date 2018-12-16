@@ -1,9 +1,5 @@
 {
   "modules" : [
-     { "name": "cookie_table" },
-     { "name": "har_importer" },
-     { "name": "network" },
-
      { "name": "ndb", "type": "autostart" },
      { "name": "layer_viewer" },
      { "name": "timeline_model" },
@@ -14,7 +10,12 @@
 
      { "name": "emulation", "type": "autostart" },
      { "name": "inspector_main", "type": "autostart" },
-     { "name": "mobile_throttling", "type": "autostart" }
+     { "name": "mobile_throttling", "type": "autostart" },
+
+     { "name": "cookie_table" },
+     { "name": "har_importer" },
+     { "name": "network" }
+
  ],
   "extends": "shell",
   "has_html": true
