@@ -250,12 +250,8 @@ Ndb.NodeProcessManager = class extends Common.Object {
    */
   sendLoadingFinished({ type, payload }) {
     SDK._mainConnection._onMessage(JSON.stringify({
-      method: "Network.loadingFinished",
-      params: {
-        requestId: payload.id,
-        timestamp: "19094.223976",
-        encodedDataLength: 100
-      }
+      method: 'Network.loadingFinished',
+      params: payload
     }));
   }
 
@@ -333,48 +329,8 @@ Ndb.NodeProcessManager = class extends Common.Object {
     } else {
       // response recieved
       SDK._mainConnection._onMessage(JSON.stringify({
-        method: "Network.responseReceived",
-        params: {
-          requestId: payload.id,
-          loaderId: payload.id,
-          timestamp: "19094.223976",
-          type: "Fetch",
-          response: {
-            "url":"https://jsonplaceholder.typicode.com/todos/1",
-            "status":200,
-            "statusText":"",
-            "headers": {
-              "date":"Wed, 12 Dec 2018 21:34:59 GMT",
-              "via":"1.1 vegur",
-              "x-content-type-options":"nosniff",
-              "cf-cache-status":"MISS",
-              "x-powered-by":"Express",
-              "status":"200",
-              "content-encoding":"br",
-              "pragma":"no-cache",
-              "server":"cloudflare",
-              "etag":"W/\"53-hfEnumeNh6YirfjyjaujcOPPT+s\"",
-              "expect-ct":"max-age=604800, report-uri=\"https://report-uri.cloudflare.com/cdn-cgi/beacon/expect-ct\"",
-              "vary":"Origin, Accept-Encoding",
-              "content-type":"application/json; charset=utf-8",
-              "access-control-allow-origin":"chrome-extension://nkeimhogjdpnpccoofpliimaahmaaome",
-              "cache-control":"public, max-age=14400",
-              "access-control-allow-credentials":"true",
-              "set-cookie":"__cfduid=d86ce931710da6052d6b1c2efd6c549741544650499; expires=Thu, 12-Dec-19 21:34:59 GMT; path=/; domain=.typicode.com; HttpOnly",
-              "cf-ray":"488351751c0d6bf2-SJC","expires":"Thu, 13 Dec 2018 01:34:59 GMT"
-            },
-            "mimeType":"application/json",
-            "requestHeaders": {
-              ":path":"/todos/1",
-              "origin":"chrome-extension://nkeimhogjdpnpccoofpliimaahmaaome",
-              "accept-encoding":"gzip, deflate, br","accept-language":"en-US,en;q=0.9",
-              "user-agent":"Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_3) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/73.0.3638.0 Safari/537.36",
-              "accept":"*/*",
-              ":authority":"jsonplaceholder.typicode.com",":scheme":"https",
-              ":method":"GET"
-            },
-          }
-        }
+        method: 'Network.responseReceived',
+        params: payload
       }))
       ;
     }
