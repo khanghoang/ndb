@@ -215,7 +215,8 @@ class NddService {
     } else {
       // send message to frontend directly
       // (eg: getResponseBody)
-      this._frontend.responseToFrontEnd(message.id, { body: catchedRequests[message.params.requestId].data });
+      const { base64Encoded, data } = catchedRequests[message.params.requestId];
+      this._frontend.responseToFrontEnd(message.id, { base64Encoded, body: data });
     }
   }
 

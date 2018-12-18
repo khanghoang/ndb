@@ -1,5 +1,5 @@
 const fetch = require('node-fetch');
 
-fetch('http://jsonplaceholder.typicode.com/todos/5')
-    .then(response => response.json())
-    .then(json => console.log(json))
+fetch('http://jsonplaceholder.typicode.com/todos/5');
+
+fetch('https://developers.video.ibm.com/images/example-channel-nasa.jpg')
