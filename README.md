@@ -1,4 +1,5 @@
-# ndb
+# Summer
+![](https://vignette.wikia.nocookie.net/rickandmorty/images/1/13/S1e1_meet_summer.png/revision/latest/scale-to-width-down/640?cb=20160904212354)
 
 <!-- [START badges] -->
 [![NPM ndb package](https://img.shields.io/npm/v/ndb.svg)](https://npmjs.org/package/ndb)
